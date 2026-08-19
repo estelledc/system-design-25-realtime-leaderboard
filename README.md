@@ -27,7 +27,7 @@ cache loss, and crash boundaries.
 The implementation now exercises PostgreSQL 17 and Redis 7.4 through pure, infrastructure, crash, smoke, and benchmark gates.
 Local verification covers exact event/request replay, concurrent strict-best updates, deterministic ties, immutable queries,
 cache loss/corruption, exact rebuild, stale publisher fencing, published retention, orphan GC, freeze/close, and six independent
-`SIGKILL` windows. Public repository and CI receipts remain pending until the implementation commit is published.
+`SIGKILL` windows. The same gate is green in public CI on Node 22, 24, and 26 with PostgreSQL 17.11 and Redis 7.4.10.
 
 The bounded benchmark uses 128 generated players, 1,024 immutable events, two complete publications, 64 full-verification
 queries, one cache flush/rebuild, and four reclaimed projections. Its elapsed values describe only that local run; they are not a
@@ -44,6 +44,19 @@ npm run check:ci
 
 `check:ci` fails if pure checks, real dependencies, crash processes, smoke, benchmark, audit, or repository evidence checks fail.
 It never silently substitutes mocks for the PostgreSQL/Redis gates.
+
+## Verification receipts
+
+- Public repository: <https://github.com/estelledc/system-design-25-realtime-leaderboard>
+- Closed-book contract: [`e1841806d61b3d17f5d40766ce54a947a4ae4521`](https://github.com/estelledc/system-design-25-realtime-leaderboard/commit/e1841806d61b3d17f5d40766ce54a947a4ae4521)
+- Source-calibrated design: [`3f289e435aacb4c6a15840b1773aabff0285f7dc`](https://github.com/estelledc/system-design-25-realtime-leaderboard/commit/3f289e435aacb4c6a15840b1773aabff0285f7dc)
+- Executable implementation: [`1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577`](https://github.com/estelledc/system-design-25-realtime-leaderboard/commit/1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577)
+- Public implementation CI: [run `32211354123`](https://github.com/estelledc/system-design-25-realtime-leaderboard/actions/runs/32211354123)
+- Successful jobs: Node 22 `95944540292`, Node 24 `95944540123`, Node 26 `95944540153`.
+
+Each public job recorded 10 pure tests, 8 real PostgreSQL/Redis tests, six child processes killed by `SIGKILL`, zero skipped/todo
+tests, zero high/critical dependency findings, the smoke lifecycle, and the bounded benchmark. These are implementation receipts,
+not evidence of a valid game result, anti-cheat decision, reward, player display/read, production SLA, or external acceptance.
 
 ## Read first
 

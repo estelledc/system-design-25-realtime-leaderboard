@@ -94,4 +94,11 @@ assert.match(research, /e1841806d61b3d17f5d40766ce54a947a4ae4521/);
 assert.match(research, /attested=false/);
 assert.match(research, /tracefetch_failed/);
 
+const readme = await readFile(resolve(root, 'README.md'), 'utf8');
+assert.match(readme, /1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577/);
+assert.match(readme, /32211354123/);
+assert.match(readme, /95944540292/);
+assert.match(readme, /95944540123/);
+assert.match(readme, /95944540153/);
+
 process.stdout.write(`${JSON.stringify({ checkedFiles: allFiles.length, skippedTests: 0, copiedMedia: 0 })}\n`);

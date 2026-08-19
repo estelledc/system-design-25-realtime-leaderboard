@@ -66,5 +66,13 @@ No per-operation sample from a shared CI runner is promoted to an SLA, QPS, p95/
 
 ## Completion receipts
 
-The final README must name the exact implementation commit, public workflow run and job IDs, test/crash/benchmark counts, and what
-those checks do not cover. Until then the repository remains design-calibrated rather than complete.
+- Local `check:ci`: Node 26.7.0, PostgreSQL 17.11, Redis 7.4.10; 10 pure tests, 8 infrastructure groups, six true `SIGKILL`
+  processes, smoke, and benchmark all passed with zero fail/skip/todo; audit reported zero high/critical findings.
+- Executable implementation: `1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577`.
+- Public implementation workflow: run `32211354123`, conclusion `success`.
+- Public jobs: Node 22 `95944540292`, Node 24 `95944540123`, Node 26 `95944540153`; all ran PostgreSQL 17.11 and Redis 7.4.10.
+- Public benchmark in each job: 128 generated players, 1,024 immutable events, two complete publications, 64 verified queries,
+  one cache flush/rebuild, four reclaimed projections, zero skips, and zero game/anti-cheat/reward/player-display/external receipts.
+
+The final documentation commit must run the same public matrix before the parent index can mark the repository complete. Neither
+the implementation run nor that final run covers production behavior or any excluded external outcome.
