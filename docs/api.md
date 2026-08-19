@@ -15,11 +15,34 @@ The executable API is a lab surface, not wire compatibility with a game, Redis, 
 `POST /v1/seasons`
 
 ```json
-{"requestKey":"req-season-1","seasonId":"season-a","generation":1}
+{
+  "requestKey":"req-season-1",
+  "seasonId":"season-a",
+  "generation":1,
+  "workerId":"publisher-a",
+  "workerGeneration":1
+}
 ```
 
 Returns `201` with state `open`, creation revision metadata, and replay status. Reusing either request or season identity with a
 different intent returns `409 intent_conflict`.
+
+## Rotate projection worker
+
+`POST /v1/worker-assignments`
+
+```json
+{
+  "requestKey":"req-worker-2",
+  "seasonId":"season-a",
+  "expectedGeneration":1,
+  "workerId":"publisher-b",
+  "nextGeneration":2
+}
+```
+
+The next generation must be exactly one greater. A prepared publication from the old worker can remain as an orphan but cannot
+move the authoritative current pointer.
 
 ## Report score
 
@@ -98,6 +121,9 @@ Player or around-player:
 Returns the bound publication/source revision, total population, exact rank items, query shape, and replay status. A `nextOffset`
 is valid only with the same publication ID; it is not a cursor over the moving current leaderboard.
 
+An explicit publication outside the retained horizon returns `404 not_found`. A completed query receipt can still replay its
+stored result after the underlying projection is reclaimed; a pending query reservation prevents GC of its bound publication.
+
 ## Rebuild projection
 
 `POST /v1/publications/{publicationId}/rebuild`
@@ -124,7 +150,8 @@ Returns the same publication identity/count/digest after full readback. It never
 ```
 
 Returns considered and removed publication counts/IDs only in the privileged synthetic operator result. Ordinary telemetry emits
-counts without identities.
+counts without identities. `retainPublished` is `1..8`: older non-current published projections and old prepared/orphan
+projections can be reclaimed only after the cutoff and fencing checks.
 
 ## State
 

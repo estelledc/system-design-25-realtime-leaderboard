@@ -9,7 +9,7 @@
 5. Benchmark reports bounded observations only.
 6. Public CI proves these commands ran at one commit on declared runners/services; it does not prove production behavior.
 
-## Planned pure tests
+## Pure gate
 
 - ID/body/integer/score/page/radius/cardinality validation and unknown-field rejection;
 - canonical intent and ordered-publication digest stability;
@@ -18,7 +18,7 @@
 - top/page/player/around windows, edge clamping, missing player, and immutable continuation;
 - error/telemetry redaction and forbidden evidence-language scan.
 
-## Planned PostgreSQL/Redis tests
+## PostgreSQL/Redis gate
 
 - exact season/score/publication/query replay and changed-intent conflict;
 - concurrent higher/lower/equal score reports with one correct best and all immutable events;
@@ -30,6 +30,9 @@
 - top/page/player/around query stability across newer publications;
 - Redis flush then exact same-identity rebuild from stored publication items;
 - stale worker leaves only an unreachable orphan; fenced GC preserves current/retained/rebuilding identities.
+- concurrent reuse of one publication identity resolves to one success and one typed conflict, including PostgreSQL serialization
+  failure recovery;
+- published-retention GC removes old projections while a completed immutable query receipt still replays.
 
 ## Required true-process crash windows
 

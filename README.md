@@ -22,6 +22,29 @@ This deliberately bounded lab uses highest accepted score, not the secondary cha
 explicit: score semantics belong to the product contract, while the repository concentrates on replay, ties, immutable reads,
 cache loss, and crash boundaries.
 
+## Executable status
+
+The implementation now exercises PostgreSQL 17 and Redis 7.4 through pure, infrastructure, crash, smoke, and benchmark gates.
+Local verification covers exact event/request replay, concurrent strict-best updates, deterministic ties, immutable queries,
+cache loss/corruption, exact rebuild, stale publisher fencing, published retention, orphan GC, freeze/close, and six independent
+`SIGKILL` windows. Public repository and CI receipts remain pending until the implementation commit is published.
+
+The bounded benchmark uses 128 generated players, 1,024 immutable events, two complete publications, 64 full-verification
+queries, one cache flush/rebuild, and four reclaimed projections. Its elapsed values describe only that local run; they are not a
+realtime latency, throughput, availability, durability, scale, fairness, reward, or external-acceptance claim.
+
+## Run the gates
+
+Start the pinned PostgreSQL/Redis services from `compose.yaml`, set `DATABASE_URL` and `REDIS_URL`, then run:
+
+```bash
+npm ci --ignore-scripts
+npm run check:ci
+```
+
+`check:ci` fails if pure checks, real dependencies, crash processes, smoke, benchmark, audit, or repository evidence checks fail.
+It never silently substitutes mocks for the PostgreSQL/Redis gates.
+
 ## Read first
 
 - [Closed-book contract](docs/closed-book-contract.md)

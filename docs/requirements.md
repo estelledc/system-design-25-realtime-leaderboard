@@ -43,6 +43,10 @@ projection. Limits are deliberately small enough that every publication is mater
 | query page size | 1–32 |
 | around-player radius | 0–8 |
 | retained published snapshots per season | 8 |
+| total prepared + published manifests per season | 16 |
+| mutation receipts per reset fixture | 4,096 |
+| query receipts/reservations per reset fixture | 2,048 |
+| GC runs per reset fixture | 64 |
 | JSON request body | 16 KiB |
 
 ## Reliability requirements
@@ -52,6 +56,8 @@ projection. Limits are deliberately small enough that every publication is mater
 - Score commit may precede rank visibility. Responses report event revision and current publication source revision separately.
 - Redis writes are verified by reading every projected member and payload and recomputing the authority digest.
 - Projection keys are immutable after verification. Recovery deletes/rebuilds only an unpublished or explicitly rebuilding identity.
+- GC keeps the newest configured `1..8` published views, excludes current/rebuilding/pending-query views, and marks reclaimed old
+  publications outside the queryable retention horizon.
 - Crash tests use independent processes and `SIGKILL`, not thrown exceptions pretending to be process death.
 - No test may silently skip because PostgreSQL or Redis is missing in the infrastructure gate.
 

@@ -65,9 +65,10 @@ These steps do not validate matches, settle disputes, or grant rewards.
 
 ## Orphan GC
 
-Run GC with explicit season, worker generation, published retention count, and UTC cutoff. The service rechecks that each candidate
-is prepared, not current, not retained, not rebuilding, and older than the cutoff before deleting its three Redis keys. Database
-publication rows and mutation receipts stay as evidence. A Redis error aborts rather than reporting partial success as complete.
+Run GC with explicit season, worker generation, published retention count, and UTC cutoff. The service claims old prepared
+orphans and non-current published views beyond the newest retained count. It excludes current, rebuilding, already claimed, and
+pending-query views before deleting their three Redis keys. Database publication rows and completed query receipts stay as
+evidence; reclaimed published views become non-queryable. A Redis error aborts rather than reporting partial success as complete.
 
 ## Benchmark interpretation
 

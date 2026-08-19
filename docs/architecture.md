@@ -129,9 +129,11 @@ can create the final frozen view. Close rejects new preparation and does not imp
 Rebuild locks the publication, marks a short-lived rebuilding flag, rewrites only its derived keys from stored items, verifies in
 full, and clears the flag. It neither recalculates live rows nor changes source revision/current pointer.
 
-GC requires the current worker generation and a retention cutoff. It selects only non-current, non-retained, non-rebuilding
-prepared publications, rechecks reachability under lock, deletes their Redis keys, then records reclamation. In v0.1 Redis failures
-abort the run; PostgreSQL rows remain evidence.
+GC requires the current worker generation, a `1..8` published-retention count, and a cutoff. It can claim old prepared/orphan
+projections plus non-current published projections beyond the newest retained count. Current, rebuilding, already claimed, and
+pending-query publications are excluded. Candidate identities are durably reserved before Redis deletion, then reachability is
+rechecked before the run receipt commits. A crash after deletion resumes the same candidate list. Published manifests remain as
+authority evidence but become non-queryable outside retention; completed query receipts still replay their stored result.
 
 ## Concurrency and expansion boundary
 
