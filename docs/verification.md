@@ -1,5 +1,18 @@
 # Verification plan and evidence matrix
 
+## Identity-safe history
+
+The identity-safe rewrite preserved every existing tree, message, and timestamp while mapping the four commits in order:
+
+- `e1841806d61b3d17f5d40766ce54a947a4ae4521` → `bcfa116c494fec16cc63628bcc5477fd020bfc91`
+- `3f289e435aacb4c6a15840b1773aabff0285f7dc` → `d5f8d9c43eb20665dbda00e45127993004fbefd0`
+- `1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577` → `bd1abeb1103968d01f2efa01ce328cce65474c29`
+- `4eaa29f4c69d5037fa14a68d5b5aca97c3a8219c` → `89ebc79bb62a1397f00bd8b130f5ec2f02a9711c`
+
+Current reachable `main` uses the repository owner's GitHub noreply identity. Rewritten baseline
+`89ebc79bb62a1397f00bd8b130f5ec2f02a9711c` passed [CI run 32229149997](https://github.com/estelledc/system-design-25-realtime-leaderboard/actions/runs/32229149997)
+on Node 22/24/26 with PostgreSQL 17.11, Redis 7.4, and the complete gate.
+
 ## Evidence levels
 
 1. Pure tests prove deterministic validation, digest, tie, query-window, and error behavior in process.
@@ -68,8 +81,9 @@ No per-operation sample from a shared CI runner is promoted to an SLA, QPS, p95/
 
 - Local `check:ci`: Node 26.7.0, PostgreSQL 17.11, Redis 7.4.10; 10 pure tests, 8 infrastructure groups, six true `SIGKILL`
   processes, smoke, and benchmark all passed with zero fail/skip/todo; audit reported zero high/critical findings.
-- Executable implementation: `1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577`.
-- Public implementation workflow: run `32211354123`, conclusion `success`.
+- Executable implementation in current reachable history: `bd1abeb1103968d01f2efa01ce328cce65474c29`; its pre-rewrite
+  object was `1c1de55ef4e08ce53f3ee6a72fa54b4caf2b9577`.
+- Historical public implementation workflow: run `32211354123`, conclusion `success`; it remains bound to the pre-rewrite object.
 - Public jobs: Node 22 `95944540292`, Node 24 `95944540123`, Node 26 `95944540153`; all ran PostgreSQL 17.11 and Redis 7.4.10.
 - Public benchmark in each job: 128 generated players, 1,024 immutable events, two complete publications, 64 verified queries,
   one cache flush/rebuild, four reclaimed projections, zero skips, and zero game/anti-cheat/reward/player-display/external receipts.
